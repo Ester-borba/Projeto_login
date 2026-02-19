@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { db } from "./database";
+import pool from "./database";
+
 
 const router = Router();
 
@@ -12,10 +13,12 @@ router.post("/login", async (req, res) => {
 
   try {
     // Consulta no banco
-    const [rows]: any = await db.query(
-      "SELECT * FROM users WHERE email = ? AND password = ?",
-      [email, password]
-    );
+    const result = await pool.query(
+  "SELECT * FROM users WHERE email = $1 AND password = $2",
+  [email, password]
+);
+
+const rows = result.rows;
 
     // Se não encontrou usuário
     if (rows.length === 0) {

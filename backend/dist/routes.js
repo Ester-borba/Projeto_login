@@ -1,7 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const database_1 = require("./database");
+const database_1 = __importDefault(require("./database"));
 const router = (0, express_1.Router)();
 /**
  * Rota de LOGIN
@@ -11,7 +14,8 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
     try {
         // Consulta no banco
-        const [rows] = await database_1.db.query("SELECT * FROM users WHERE email = ? AND password = ?", [email, password]);
+        const result = await database_1.default.query("SELECT * FROM users WHERE email = $1 AND password = $2", [email, password]);
+        const rows = result.rows;
         // Se não encontrou usuário
         if (rows.length === 0) {
             return res.status(401).json({ message: "Usuário ou senha inválidos" });
