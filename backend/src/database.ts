@@ -1,9 +1,14 @@
-import mysql from "mysql2/promise";
+import { Pool } from "pg";
+import dotenv from "dotenv";
 
-// Criamos uma conexão com o banco MySQL
-export const db = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "Esterswag122", // 👉 coloque aqui a senha do seu MySQL (se tiver)
-  database: "login_db",
+dotenv.config();
+
+// Render fornece a URL do banco via variável de ambiente
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // obrigatório no Render
+  },
 });
+
+export default pool;
